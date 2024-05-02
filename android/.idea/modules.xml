@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1847000126/cfx_quantum.react-native-mmkv.main.iml" filepath="$PROJECT_DIR$/.idea/modules/1847000126/cfx_quantum.react-native-mmkv.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1113323721/cfx_quantum.react-native-reanimated.main.iml" filepath="$PROJECT_DIR$/.idea/modules/1113323721/cfx_quantum.react-native-reanimated.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1049273396/cfx_quantum.react-native-screens.main.iml" filepath="$PROJECT_DIR$/.idea/modules/1049273396/cfx_quantum.react-native-screens.main.iml" />
+    </modules>
+  </component>
+</project>
