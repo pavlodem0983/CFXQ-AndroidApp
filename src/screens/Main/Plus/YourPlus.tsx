@@ -203,7 +203,7 @@ const YourPlus = () => {
           <View style={[Gutters.smallLMargin]}>
             <Text weight="bold">{t('allTxts.plusNextDateText')}</Text>
             <Text weight="bold" mt={10}>
-              {t('allTxts.plusNextDateText1')} = {'2024-4-01'}
+              {t('allTxts.plusNextDateText1')} = {'2024-6-01'}
             </Text>
             <TouchableOpacity
               onPress={() => navigation.navigate('GurdaScreen')}

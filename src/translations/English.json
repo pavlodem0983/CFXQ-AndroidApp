@@ -190,6 +190,7 @@
     "GurdaScreen3": "Your compounded Plus is:",
     "depositNewTxt": "Deposits less than the minimum amount of 60 USD will not be credited or refunded.",
     "widhtrawNewTxt": "Withdrawals less than the minimum amount of 60 USD will not be processed.",
-    "redTxt": "The transaction cannot be performed due to lack of KYC. Contact support."
+    "redTxt": "The transaction cannot be performed due to lack of KYC. Contact support.",
+    "accountDelete": "Request account deletion"
   }
 }

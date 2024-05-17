@@ -16,6 +16,7 @@ import History from '../Plus/History';
 import Staking from '../Plus/Staking';
 import Slider from '@react-native-community/slider';
 import { useTranslation } from 'react-i18next';
+import { Alert } from 'react-native';
 
 const renderScene = SceneMap({
   staking: Staking,
@@ -89,347 +90,350 @@ const GurdaScreen = () => {
   };
 
   const calculateCompoundInterest = intValue => {
-    const parsedAmount = parseFloat(textInputVal);
-    const parsedMonths = parseInt(intValue);
+    const amount = parseFloat(textInputVal);
 
-    if (
-      isNaN(parsedAmount) ||
-      isNaN(parsedMonths) ||
-      parsedAmount < 1000 ||
-      parsedMonths < 1 ||
-      parsedMonths > 48
-    ) {
-      alert('Please enter valid values.');
-      return;
+    if (amount >= 1000) {
+      const parsedAmount = amount;
+      const parsedMonths = parseInt(intValue);
+
+      if (
+        isNaN(parsedAmount) ||
+        isNaN(parsedMonths) ||
+        parsedMonths < 1 ||
+        parsedMonths > 48
+      ) {
+        alert('Please enter valid values.');
+        return;
+      }
+
+      let stakedAmount = parsedAmount;
+      let earnings = 0;
+
+      for (let m = 0; m < parsedMonths; m++) {
+        const interestRate = getInterestRate(stakedAmount);
+        const monthlyAccruedInterest =
+          Math.round(interestRate * stakedAmount * 100) / 100;
+        earnings += monthlyAccruedInterest;
+        stakedAmount += monthlyAccruedInterest;
+      }
+
+      const percentageReturns = (earnings / parsedAmount) * 100;
+
+      setPotentialReturns(earnings.toFixed(2));
+      setPercentageReturns(percentageReturns.toFixed(2));
+    } else {
+      Alert.alert('Staking Amount should be 1000 or more!');
     }
-
-    let stakedAmount = parsedAmount;
-    let earnings = 0;
-
-    for (let m = 0; m < parsedMonths; m++) {
-      const interestRate = getInterestRate(stakedAmount);
-      const monthlyAccruedInterest =
-        Math.round(interestRate * stakedAmount * 100) / 100;
-      earnings += monthlyAccruedInterest;
-      stakedAmount += monthlyAccruedInterest;
-    }
-
-    const percentageReturns = (earnings / parsedAmount) * 100;
-
-    setPotentialReturns(earnings.toFixed(2));
-    setPercentageReturns(percentageReturns.toFixed(2));
   };
 
   return (
     <View style={[Layout.container, Gutters.tinyHPadding]}>
       <SafeAreaView style={[Layout.fill]}>
-        <View style={{ alignSelf: 'center' }}>
-          <View style={[Layout.alignItemsEnd]}>
-            <Image
-              style={{ width: 153, height: 57 }}
-              source={Images.main.zerooneCal}
-            />
+        <View style={[Layout.alignItemsEnd]}>
+          <Image
+            style={{ width: 153, height: 57 }}
+            source={Images.main.zerooneCal}
+          />
+        </View>
+        <View style={[Layout.alignItemsCenter]}>
+          <Image
+            source={Images.main.neww}
+            style={{ width: 300, height: 20, marginTop: 30 }}
+          />
+        </View>
+        <View style={{ width: '50%', alignSelf: 'center', marginTop: 15 }}>
+          <Text style={{ color: 'white', textAlign: 'center' }}>
+            {t('allTxts.GurdaScreen1')}
+          </Text>
+        </View>
+        <View
+          style={{
+            borderBottomWidth: 1,
+            width: '95%',
+            alignSelf: 'center',
+            marginVertical: '1%',
+            borderColor: '#515156',
+            marginTop: 35,
+          }}
+        />
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View style={{ width: '90%', marginTop: 20 }}>
+            <Text style={{ color: 'white' }}>
+              {/* {t('allTxts.stakingSimulAmountLabel')} */}
+            </Text>
           </View>
           <View style={[Layout.alignItemsCenter]}>
             <Image
-              source={Images.main.neww}
-              style={{ width: 300, height: 20, marginTop: 30 }}
+              source={Images.main.zonenew}
+              style={{ width: 400, height: 60, marginTop: 10 }}
             />
           </View>
-          <View style={{ width: '50%', alignSelf: 'center', marginTop: 15 }}>
-            <Text style={{ color: 'white', textAlign: 'center' }}>
-              {t('allTxts.GurdaScreen1')}
+          <View>
+            <TextInput
+              label={t('allTxts.stakingSimulAmountLabel')}
+              placeholder={t('allTxts.stakingSimulAmountPlaceholder')}
+              placeholderTextColor={Colors.textGray200}
+              keyboardType="numeric"
+              value={textInputVal}
+              onChangeText={val => setTextInputVal(val)}
+            />
+          </View>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              marginTop: 25,
+            }}
+          >
+            <Text style={{ color: '#EFF3F6' }}>
+              {t('allTxts.stakingSimulSliderLabel')}
+            </Text>
+            <Text style={{ color: '#268DC4' }}>
+              {t('allTxts.stakingSimulPotentialReturnsMonth')}
             </Text>
           </View>
           <View
             style={{
-              borderBottomWidth: 1,
-              width: '95%',
-              alignSelf: 'center',
-              marginVertical: '1%',
-              borderColor: '#515156',
-              marginTop: 35,
+              marginTop: 10,
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: '#171A23',
+              borderWidth: 1.2,
+              borderColor: Colors.inputBackground,
+              height: 85,
+              paddingHorizontal: 10,
+              borderRadius: 5,
+              shadowColor: '#268CD0',
+              shadowOffset: {
+                width: 1,
+                height: 0,
+              },
+              shadowOpacity: 0.6,
+              shadowRadius: 6.5,
+              elevation: 5,
             }}
-          />
-          <ScrollView showsVerticalScrollIndicator={false}>
-            <View style={{ width: '90%', marginTop: 20 }}>
-              <Text style={{ color: 'white' }}>
-                {/* {t('allTxts.stakingSimulAmountLabel')} */}
-              </Text>
-            </View>
-            <View style={[Layout.alignItemsCenter]}>
-              <Image
-                source={Images.main.zonenew}
-                style={{ width: 350, height: 50, marginTop: 10 }}
-              />
-            </View>
+          >
+            <Slider
+              style={{ width: 350, height: 40 }}
+              minimumValue={1}
+              maximumValue={48}
+              minimumTrackTintColor="#22ACFF"
+              maximumTrackTintColor="#E3E3E3"
+              thumbTintColor="grey"
+              tapToSeek={true}
+              value={sliderVal}
+              onValueChange={val => {
+                const intValue = Math.round(val); // Round slider value to the nearest integer
+                setSliderVal(intValue);
+                setAmount(intValue);
+                calculateCompoundInterest(intValue);
+                // Update slider value
+              }}
+            />
+          </View>
+          <View style={{ marginTop: 30 }}>
+            <Text>{t('allTxts.stakingSimulPotentialReturns')}</Text>
+          </View>
+          <View
+            style={{ flexDirection: 'row', justifyContent: 'space-between' }}
+          >
+            <TextInput
+              placeholder="Type here"
+              placeholderTextColor={Colors.textGray200}
+              keyboardType="numeric"
+              style={{ width: 160, height: 30, shadowColor: '#BF174A' }}
+              value={`${textInputVal} ZONE`} // Set TextInput value from state
+              // onChangeText={text => setTextInputVal(text)} // Update state when TextInput changes
+            />
+            <TextInput
+              placeholder="Type here"
+              placeholderTextColor={Colors.textGray200}
+              keyboardType="numeric"
+              style={{ width: 160, height: 30 }}
+              value={`${sliderVal.toString()}  ${t(
+                'allTxts.stakingSimulPotentialReturnsMonth',
+              )}`} // Set TextInput value from state
+            />
+          </View>
+          <View style={{ marginTop: 10 }}>
+            <Text>{t('allTxts.GurdaScreen3')}</Text>
+          </View>
+          <View
+            style={{
+              marginTop: 10,
+              justifyContent: 'center',
+              backgroundColor: '#171A23',
+              borderWidth: 1.2,
+              borderColor: Colors.inputBackground,
+              height: 85,
+              paddingHorizontal: 10,
+              borderRadius: 5,
+              shadowColor: '#268CD0',
+
+              shadowOffset: {
+                width: 1,
+                height: 0,
+              },
+              shadowOpacity: 0.6,
+              shadowRadius: 6.5,
+              elevation: 5,
+            }}
+          >
+            <Text style={{ color: 'white', marginLeft: 10 }}>
+              {sliderVal} {t('allTxts.stakingSimulPotentialReturnsMonth')} ={' '}
+              {potentialReturns}
+              <Text style={{ color: '#DB2734' }}> {percentageReturns}% </Text>
+            </Text>
+          </View>
+          <View
+            style={{
+              marginTop: 40,
+            }}
+          >
+            {/* <Text>{t('allTxts.stakingSimulTableClientStakes')}</Text> */}
+          </View>
+          <View
+            style={{
+              marginTop: 10,
+              backgroundColor: '#171A23',
+              borderWidth: 1.2,
+              borderColor: Colors.inputBackground,
+              // height: 255,
+              width: 390,
+              paddingHorizontal: 10,
+              borderRadius: 5,
+              shadowColor: '#268CD0',
+
+              shadowOffset: {
+                width: 1,
+                height: 0,
+              },
+              shadowOpacity: 0.6,
+              shadowRadius: 6.5,
+              elevation: 5,
+              padding: 10,
+              alignSelf: 'center',
+            }}
+          >
             <View>
-              <TextInput
-                label={t('allTxts.stakingSimulAmountLabel')}
-                placeholder={t('allTxts.stakingSimulAmountPlaceholder')}
-                placeholderTextColor={Colors.textGray200}
-                keyboardType="numeric"
-                value={textInputVal}
-                onChangeText={val => setTextInputVal(val)}
-              />
-            </View>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                marginTop: 25,
-              }}
-            >
-              <Text style={{ color: '#EFF3F6' }}>
-                {t('allTxts.stakingSimulSliderLabel')}
-              </Text>
-              <Text style={{ color: '#268DC4' }}>
-                {t('allTxts.stakingSimulPotentialReturnsMonth')}
-              </Text>
-            </View>
-            <View
-              style={{
-                marginTop: 10,
-                alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: '#171A23',
-                borderWidth: 1.2,
-                borderColor: Colors.inputBackground,
-                height: 85,
-                paddingHorizontal: 10,
-                borderRadius: 5,
-                shadowColor: '#268CD0',
-                shadowOffset: {
-                  width: 1,
-                  height: 0,
-                },
-                shadowOpacity: 0.6,
-                shadowRadius: 6.5,
-                elevation: 5,
-              }}
-            >
-              <Slider
-                style={{ width: 350, height: 40 }}
-                minimumValue={1}
-                maximumValue={48}
-                minimumTrackTintColor="#22ACFF"
-                maximumTrackTintColor="#E3E3E3"
-                thumbTintColor="grey"
-                tapToSeek={true}
-                value={sliderVal}
-                onValueChange={val => {
-                  const intValue = Math.round(val); // Round slider value to the nearest integer
-                  setSliderVal(intValue);
-                  setAmount(intValue);
-                  calculateCompoundInterest(intValue);
-                  // Update slider value
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}
+              >
+                <Text style={{ top: 10 }} color="error" weight="bold">
+                  {t('allTxts.stakingSimulTableClientStakes')}
+                </Text>
+                <Text style={{ top: 10 }} color="error" weight="bold">
+                  {t('allTxts.stakingSimulTableMonthlyPlus')}
+                </Text>
+              </View>
+              {/* <Divider /> */}
+              <View
+                style={{
+                  borderBottomWidth: 1,
+                  width: 385,
+                  alignSelf: 'center',
+                  marginVertical: '1%',
+                  borderColor: '#515156',
+                  marginTop: 35,
                 }}
               />
-            </View>
-            <View style={{ marginTop: 30 }}>
-              <Text>{t('allTxts.stakingSimulPotentialReturns')}</Text>
-            </View>
-            <View
-              style={{ flexDirection: 'row', justifyContent: 'space-between' }}
-            >
-              <TextInput
-                placeholder="Type here"
-                placeholderTextColor={Colors.textGray200}
-                keyboardType="numeric"
-                style={{ width: 160, height: 40, shadowColor: '#BF174A' }}
-                value={`${textInputVal} ZONE`} // Set TextInput value from state
-                // onChangeText={text => setTextInputVal(text)} // Update state when TextInput changes
+              <View
+                style={{
+                  marginTop: 10,
+                }}
               />
-              <TextInput
-                placeholder="Type here"
-                placeholderTextColor={Colors.textGray200}
-                keyboardType="numeric"
-                style={{ width: 160, height: 40 }}
-                value={`${sliderVal.toString()}  ${t(
-                  'allTxts.stakingSimulPotentialReturnsMonth',
-                )}`} // Set TextInput value from state
-              />
-            </View>
-            <View style={{ marginTop: 10 }}>
-              <Text>{t('allTxts.GurdaScreen3')}</Text>
-            </View>
-            <View
-              style={{
-                marginTop: 10,
-                justifyContent: 'center',
-                backgroundColor: '#171A23',
-                borderWidth: 1.2,
-                borderColor: Colors.inputBackground,
-                height: 85,
-                paddingHorizontal: 10,
-                borderRadius: 5,
-                shadowColor: '#268CD0',
+              <View style={[Layout.rowHCenter, Layout.justifyContentBetween]}>
+                <Text
+                  weight="bold"
+                  style={{ flex: 1 }}
+                  align="left"
+                  color="white"
+                >
+                  {t('allTxts.stakingSimulTableFrom')}
+                </Text>
+                <Text
+                  weight="bold"
+                  style={{ right: 185 }}
+                  align="center"
+                  color="white"
+                >
+                  {t('allTxts.stakingSimulTableTo')}
+                </Text>
+              </View>
 
-                shadowOffset: {
-                  width: 1,
-                  height: 0,
-                },
-                shadowOpacity: 0.6,
-                shadowRadius: 6.5,
-                elevation: 5,
-              }}
-            >
-              <Text style={{ color: 'white', marginLeft: 10 }}>
-                {sliderVal} {t('allTxts.stakingSimulPotentialReturnsMonth')} ={' '}
-                {potentialReturns}
-                <Text style={{ color: '#DB2734' }}> {percentageReturns}% </Text>
-              </Text>
-            </View>
-            <View
-              style={{
-                marginTop: 40,
-              }}
-            >
-              {/* <Text>{t('allTxts.stakingSimulTableClientStakes')}</Text> */}
-            </View>
-            <View
-              style={{
-                marginTop: 10,
-                backgroundColor: '#171A23',
-                borderWidth: 1.2,
-                borderColor: Colors.inputBackground,
-                // height: 255,
-                width: 350,
-                paddingHorizontal: 10,
-                borderRadius: 5,
-                shadowColor: '#268CD0',
-
-                shadowOffset: {
-                  width: 1,
-                  height: 0,
-                },
-                shadowOpacity: 0.6,
-                shadowRadius: 6.5,
-                elevation: 5,
-                padding: 10,
-                alignSelf: 'center',
-              }}
-            >
-              <View>
+              {data.map((item, index) => (
                 <View
+                  key={index}
                   style={{
                     flexDirection: 'row',
                     justifyContent: 'space-between',
                     alignItems: 'center',
-                  }}
-                >
-                  <Text style={{ top: 10 }} color="error" weight="bold">
-                    {t('allTxts.stakingSimulTableClientStakes')}
-                  </Text>
-                  <Text style={{ top: 10 }} color="error" weight="bold">
-                    {t('allTxts.stakingSimulTableMonthlyPlus')}
-                  </Text>
-                </View>
-                {/* <Divider /> */}
-                <View
-                  style={{
-                    borderBottomWidth: 1,
-                    width: 385,
-                    alignSelf: 'center',
-                    marginVertical: '1%',
-                    borderColor: '#515156',
-                    marginTop: 35,
-                  }}
-                />
-                <View
-                  style={{
+                    backgroundColor:
+                      index % 2 === 0 ? '#1F3B57' : 'transparent', // Highlight every second row
+                    padding: 10,
                     marginTop: 10,
                   }}
-                />
-                <View style={[Layout.rowHCenter, Layout.justifyContentBetween]}>
-                  <Text
-                    weight="bold"
-                    style={{ flex: 1 }}
-                    align="left"
-                    color="white"
-                  >
-                    {t('allTxts.stakingSimulTableFrom')}
-                  </Text>
-                  <Text
-                    weight="bold"
-                    style={{ right: 185 }}
-                    align="center"
-                    color="white"
-                  >
-                    {t('allTxts.stakingSimulTableTo')}
-                  </Text>
+                >
+                  <Text>{item.clientStakes}</Text>
+                  <Text>{item.monthlyPlus}</Text>
+                  <Text>{item.interestRate}</Text>
                 </View>
+              ))}
+            </View>
+          </View>
+          <View
+            style={{
+              borderBottomWidth: 1,
+              width: 400,
+              alignSelf: 'center',
+              marginVertical: '1%',
+              borderColor: '#515156',
+              marginTop: 25,
+            }}
+          />
+          <View style={{ marginTop: 30 }}>
+            <Text style={{ color: '#BF174A' }}>
+              {' '}
+              {t('allTxts.stakingSimulRulesTitle')}
+            </Text>
+          </View>
 
-                {data.map((item, index) => (
-                  <View
-                    key={index}
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      backgroundColor:
-                        index % 2 === 0 ? '#1F3B57' : 'transparent', // Highlight every second row
-                      padding: 10,
-                      marginTop: 10,
-                    }}
-                  >
-                    <Text>{item.clientStakes}</Text>
-                    <Text>{item.monthlyPlus}</Text>
-                    <Text>{item.interestRate}</Text>
-                  </View>
-                ))}
-              </View>
-            </View>
-            <View
-              style={{
-                borderBottomWidth: 1,
-                width: 400,
-                alignSelf: 'center',
-                marginVertical: '1%',
-                borderColor: '#515156',
-                marginTop: 25,
-              }}
-            />
-            <View style={{ marginTop: 30 }}>
-              <Text style={{ color: '#BF174A' }}>
-                {' '}
-                {t('allTxts.stakingSimulRulesTitle')}
-              </Text>
-            </View>
-
-            <View
-              style={{ marginTop: 10, gap: 10, width: 335, marginBottom: 20 }}
-            >
-              <Text style={{ color: 'white' }}>
-                {t('allTxts.stakingSimulRulesText1')}
-              </Text>
-              <Text style={{ color: 'white' }}>
-                {t('allTxts.stakingSimulRulesText2')}
-              </Text>
-              <Text style={{ color: 'white' }}>
-                {t('allTxts.stakingSimulRulesText3')}
-              </Text>
-              <Text style={{ color: 'white' }}>
-                {t('allTxts.stakingSimulRulesText4')}
-              </Text>
-              <Text style={{ color: 'white' }}>
-                {t('allTxts.stakingSimulRulesText5')}
-              </Text>
-              <Text style={{ color: 'white' }}>
-                {t('allTxts.stakingSimulRulesTest6')}
-              </Text>
-              <Text style={{ color: 'white' }}>
-                {t('allTxts.stakingSimulRulesText7')}
-              </Text>
-              <Text style={{ color: 'white' }}>
-                {t('allTxts.stakingSimulRulesText8')}
-              </Text>
-              <Text style={{ color: 'white' }}>
-                {t('allTxts.stakingSimulRulesText9')}
-              </Text>
-            </View>
-          </ScrollView>
-        </View>
+          <View
+            style={{ marginTop: 10, gap: 10, width: 335, marginBottom: 20 }}
+          >
+            <Text style={{ color: 'white' }}>
+              {t('allTxts.stakingSimulRulesText1')}
+            </Text>
+            <Text style={{ color: 'white' }}>
+              {t('allTxts.stakingSimulRulesText2')}
+            </Text>
+            <Text style={{ color: 'white' }}>
+              {t('allTxts.stakingSimulRulesText3')}
+            </Text>
+            <Text style={{ color: 'white' }}>
+              {t('allTxts.stakingSimulRulesText4')}
+            </Text>
+            <Text style={{ color: 'white' }}>
+              {t('allTxts.stakingSimulRulesText5')}
+            </Text>
+            <Text style={{ color: 'white' }}>
+              {t('allTxts.stakingSimulRulesTest6')}
+            </Text>
+            <Text style={{ color: 'white' }}>
+              {t('allTxts.stakingSimulRulesText7')}
+            </Text>
+            <Text style={{ color: 'white' }}>
+              {t('allTxts.stakingSimulRulesText8')}
+            </Text>
+            <Text style={{ color: 'white' }}>
+              {t('allTxts.stakingSimulRulesText9')}
+            </Text>
+          </View>
+        </ScrollView>
       </SafeAreaView>
     </View>
   );

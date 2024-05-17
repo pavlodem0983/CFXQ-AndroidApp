@@ -90,6 +90,8 @@ const WalletList = () => {
   const { user, countries, tokenPlatforms, tokenTypes, AccessToken } =
     useAppSelector(state => state.app);
   const [reset, setRest] = useState<any>(false);
+  const [showStatus, setShowStatus] = useState('');
+
   const { t, i18n } = useTranslation();
 
   const deleteWalletApi = async item => {
@@ -131,6 +133,25 @@ const WalletList = () => {
     }
   };
 
+  const onChangeLang = async () => {
+    try {
+      const userId = user?.id;
+      const response = await axios.get(
+        `https://cfxbackofficeec200.backend.cfxquantum.com:35062/api/Investors/${userId}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${AccessToken}`,
+          },
+        },
+      );
+      console.log('response', response);
+      setShowStatus(response?.data?.status);
+    } catch (error) {
+      console.log('Erroriiiii:', error);
+    }
+  };
+
   const getTokenBalances3 = async () => {
     try {
       const userId = user?.id;
@@ -157,6 +178,7 @@ const WalletList = () => {
       console.log('nainb errror two', error);
     }
   };
+  console.log('showStatus', showStatus);
 
   const copyAddress = item => {
     Clipboard.setString(item?.assets[0]?.address);
@@ -186,21 +208,37 @@ const WalletList = () => {
   useEffect(() => {
     if (isFocused) {
       getWalletData();
+      onChangeLang();
     }
   }, [reset, isFocused]);
 
   return (
     <>
       {tokens.length === 0 ? (
-        <View>
-          <Text color="white">No data found please add address!</Text>
-          <Button
-            title={t('allTxts.addAddressTitle')}
-            color="white"
-            onPress={() => navigation.navigate('AddDdress')}
-            style={[Gutters.largeTMargin]}
-          />
-        </View>
+        <>
+          {showStatus !== 2 && showStatus !== 4 ? (
+            <Text
+              style={{
+                color: 'red',
+                width: 350,
+                alignSelf: 'center',
+                textAlign: 'center',
+              }}
+            >
+              {t('allTxts.depositWithdrawNotAllowed')}
+            </Text>
+          ) : (
+            <View>
+              <Text color="white">No data found, please add an address!</Text>
+              <Button
+                title={t('allTxts.addAddressTitle')}
+                color="white"
+                onPress={() => navigation.navigate('AddDdress')}
+                style={[Gutters.largeTMargin]}
+              />
+            </View>
+          )}
+        </>
       ) : (
         <FlatList
           data={tokens}
@@ -226,77 +264,75 @@ const WalletList = () => {
                 : '';
 
             return (
-              <>
-                <View
-                  style={[
-                    Layout.row,
-                    Layout.justifyContentBetween,
-                    Gutters.tinyVPadding,
-                    Layout.fullWidth,
-                  ]}
-                >
-                  <Image source={image} style={styles.icon} />
-                  <View>
-                    <View
-                      style={[Layout.rowHCenter, Layout.justifyContentBetween]}
-                    >
-                      <View style={[Layout.rowHCentr]}>
-                        <Text style={{ width: 310 }} ml={6} weight="bold">
-                          {item?.assets[0]?.tokenTypeId === 101
-                            ? 'BTC_TEST'
-                            : item?.assets[0]?.tokenTypeId === 0
-                            ? 'ZONE'
-                            : item?.assets[0]?.tokenTypeId === 1
-                            ? 'USTD'
-                            : item?.assets[0]?.tokenTypeId === 2
-                            ? 'CFXQ'
-                            : item?.assets[0]?.tokenTypeId === 102
-                            ? 'ETH_TEST3'
-                            : item?.assets[0]?.tokenTypeId === 103
-                            ? 'XLM_TEST'
-                            : item?.assets[0]?.tokenTypeId === 104
-                            ? 'BNB_TEST'
-                            : item?.assets[0]?.tokenTypeId === 105
-                            ? 'LTC_TEST'
-                            : ''}
-                        </Text>
-                        <Text ml={5} color="textGray200">
-                          {item?.displayLabel}
-                        </Text>
-                      </View>
-                    </View>
-                    <View style={[Gutters.smallVPadding]}></View>
-                    <Text
-                      style={{ width: windowLayout.width - 80 }}
-                      color="textGray200"
-                      ml={4}
-                    >
-                      {item?.assets[0]?.address}
-                    </Text>
-                  </View>
+              <View
+                style={[
+                  Layout.row,
+                  Layout.justifyContentBetween,
+                  Gutters.tinyVPadding,
+                  Layout.fullWidth,
+                ]}
+              >
+                <Image source={image} style={styles.icon} />
+                <View>
                   <View
-                    style={{
-                      flexDirection: 'row',
-                      right: 90,
-                      alignItems: 'center',
-                      gap: 10,
-                    }}
+                    style={[Layout.rowHCenter, Layout.justifyContentBetween]}
                   >
-                    <TouchableOpacity onPress={() => copyAddress(item)}>
-                      <Ionicons name="copy" color="white" size={20} />
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => deleteWalletApi(item)}>
-                      <Ionicons name="trash" color="white" size={20} />
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                      onPress={() => navigation.navigate('AddDdress')}
-                    >
-                      <MaterialIcons name="add" color="white" size={25} />
-                    </TouchableOpacity>
+                    <View style={[Layout.rowHCentr]}>
+                      <Text style={{ width: 310 }} ml={6} weight="bold">
+                        {item?.assets[0]?.tokenTypeId === 101
+                          ? 'BTC_TEST'
+                          : item?.assets[0]?.tokenTypeId === 0
+                          ? 'ZONE'
+                          : item?.assets[0]?.tokenTypeId === 1
+                          ? 'USTD'
+                          : item?.assets[0]?.tokenTypeId === 2
+                          ? 'CFXQ'
+                          : item?.assets[0]?.tokenTypeId === 102
+                          ? 'ETH_TEST3'
+                          : item?.assets[0]?.tokenTypeId === 103
+                          ? 'XLM_TEST'
+                          : item?.assets[0]?.tokenTypeId === 104
+                          ? 'BNB_TEST'
+                          : item?.assets[0]?.tokenTypeId === 105
+                          ? 'LTC_TEST'
+                          : ''}
+                      </Text>
+                      <Text ml={5} color="textGray200">
+                        {item?.displayLabel}
+                      </Text>
+                    </View>
                   </View>
+                  <View style={[Gutters.smallVPadding]}></View>
+                  <Text
+                    style={{ width: windowLayout.width - 80 }}
+                    color="textGray200"
+                    ml={4}
+                  >
+                    {item?.assets[0]?.address}
+                  </Text>
                 </View>
-              </>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    right: 90,
+                    alignItems: 'center',
+                    gap: 10,
+                  }}
+                >
+                  <TouchableOpacity onPress={() => copyAddress(item)}>
+                    <Ionicons name="copy" color="white" size={20} />
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => deleteWalletApi(item)}>
+                    <Ionicons name="trash" color="white" size={20} />
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    onPress={() => navigation.navigate('AddDdress')}
+                  >
+                    <MaterialIcons name="add" color="white" size={25} />
+                  </TouchableOpacity>
+                </View>
+              </View>
             );
           }}
         />

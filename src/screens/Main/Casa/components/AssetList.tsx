@@ -132,50 +132,53 @@ const AssetList = ({ tokens }: AssetListProps) => {
   };
 
   return (
-    <FlatList
-      data={tokens}
-      renderItem={renderItem}
-      keyExtractor={item => item.id.toString()}
-      ListHeaderComponent={
-        <>
-          <SummaryCard tokens={tokens} />
-          <View
-            style={[
-              Layout.row,
-              Layout.alignItemsCenter,
-              Layout.justifyContentBetween,
-              Gutters.smallHPadding,
-              Gutters.smallVMargin,
-            ]}
-          >
-            <View style={[Layout.row, Layout.alignItemsCenter]}>
-              <CheckBox
-                disabled={false}
-                value={showBlnc}
-                onValueChange={newValue => setShowBlnc(!showBlnc)}
-                style={styles.checkbox}
-              />
-              <TouchableOpacity>
-                <Text color="highlight" ml={15}>
-                  {/* Nascondi Saldi O  */}
-                  {t('allTxts.homePageHideZeroBalances')}
-                </Text>
-              </TouchableOpacity>
-            </View>
-            {/* <TouchableOpacity>
+    <>
+      <SummaryCard tokens={tokens} />
+
+      <FlatList
+        data={tokens}
+        renderItem={renderItem}
+        keyExtractor={item => item.id.toString()}
+        ListHeaderComponent={
+          <>
+            <View
+              style={[
+                Layout.row,
+                Layout.alignItemsCenter,
+                Layout.justifyContentBetween,
+                Gutters.smallHPadding,
+                Gutters.smallVMargin,
+              ]}
+            >
+              <View style={[Layout.row, Layout.alignItemsCenter]}>
+                <CheckBox
+                  disabled={false}
+                  value={showBlnc}
+                  onValueChange={newValue => setShowBlnc(!showBlnc)}
+                  style={styles.checkbox}
+                />
+                <TouchableOpacity>
+                  <Text color="highlight" ml={5}>
+                    {/* Nascondi Saldi O  */}
+                    {t('allTxts.homePageHideZeroBalances')}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              {/* <TouchableOpacity>
               <Ionicons
                 name="add-circle-outline"
                 color={Colors.textGray500}
                 size={24}
               />
             </TouchableOpacity> */}
-          </View>
-        </>
-      }
-      contentContainerStyle={{
-        paddingBottom: bottomTabBarHeight,
-      }}
-    />
+            </View>
+          </>
+        }
+        contentContainerStyle={{
+          paddingBottom: bottomTabBarHeight,
+        }}
+      />
+    </>
   );
 };
 
@@ -189,5 +192,6 @@ const styles = StyleSheet.create({
   checkbox: {
     width: 16,
     height: 16,
+    color: 'white',
   },
 });

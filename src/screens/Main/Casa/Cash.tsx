@@ -23,12 +23,14 @@ const Cash = ({ route }: CasaStackScreenProps) => {
 
   const tokens = route.params?.tokens;
   const check = route.params?.check;
+  console.log(AccessToken);
 
   const [getData, setGetData] = useState([]);
   const [getValue, setGetValue] = useState([]);
   const [tokTypes, setTokTypes] = useState([]);
   const [assetShortNames, setAssetShortNames] = useState({});
   const addressId = token[0]?.address;
+  console.log('checkkkkkkkkk', user?.id);
 
   const [selectedAssetId, setSelectedAssetId] = useState<string | null>(null);
   const [tokenId, setTokenId] = useState<string | null>(101);
@@ -81,21 +83,73 @@ const Cash = ({ route }: CasaStackScreenProps) => {
   };
 
   const getTokenData = async value => {
-    let updatedTokenId = 101;
+    let updatedTokenId = 3;
+    console.log('numaric', value);
 
-    if (value === 'BNB_TEST') {
-      updatedTokenId = 104;
-    } else if (value === 'BTC') {
-      updatedTokenId = 101;
+    if (value === 'ZONE') {
+      updatedTokenId = 0;
+    } else if (value === 'CFXQ') {
+      updatedTokenId = 1;
     } else if (value === 'ETH') {
-      updatedTokenId = 102;
+      updatedTokenId = 2;
+    } else if (value === 'BTC') {
+      updatedTokenId = 3;
+    } else if (value === 'BAT') {
+      updatedTokenId = 4;
+    } else if (value === 'BNB_BSC') {
+      updatedTokenId = 5;
+    } else if (value === 'DASH') {
+      updatedTokenId = 6;
+    } else if (value === 'USDT') {
+      updatedTokenId = 7;
+    } else if (value === 'USDT_BSC') {
+      updatedTokenId = 8;
+    } else if (value === 'USDT_TRON') {
+      updatedTokenId = 9;
     } else if (value === 'XLM') {
-      updatedTokenId = 103;
+      updatedTokenId = 10;
+    } else if (value === 'XRP') {
+      updatedTokenId = 11;
+    } else if (value === 'ZRX') {
+      updatedTokenId = 12;
+    } else if (value === 'VAFFA') {
+      updatedTokenId = 13;
+    } else if (value === 'EDCC') {
+      updatedTokenId = 14;
+    } else if (value === 'BTT') {
+      updatedTokenId = 15;
     } else if (value === 'LTC') {
-      updatedTokenId = 105;
+      updatedTokenId = 16;
+    } else if (value === 'SHIB') {
+      updatedTokenId = 17;
+    } else if (value === 'SHIB_BSC') {
+      updatedTokenId = 18;
+    } else if (value === 'UNI') {
+      updatedTokenId = 19;
+    } else if (value === 'USDC') {
+      updatedTokenId = 20;
+    } else if (value === 'TRX') {
+      updatedTokenId = 21;
+    } else if (value === 'MATIC') {
+      updatedTokenId = 22;
+    } else if (value === 'USDT_MATIC') {
+      updatedTokenId = 23;
+    } else if (value === 'CFXQ7L_1') {
+      updatedTokenId = 110;
+    } else if (value === 'CFXQ7L_2') {
+      updatedTokenId = 111;
+    } else if (value === 'CFXQ7L_3') {
+      updatedTokenId = 112;
+    } else if (value === 'CFXQ7L_4') {
+      updatedTokenId = 113;
+    } else if (value === 'CFXQ2Y') {
+      updatedTokenId = 118;
+    } else if (value === 'DBA') {
+      updatedTokenId = 119;
     }
 
     setTokenId(updatedTokenId); // Update tokenId based on dropdown value
+    console.log('updatedTokenId', updatedTokenId);
 
     try {
       const response = await axios.get(
@@ -109,6 +163,7 @@ const Cash = ({ route }: CasaStackScreenProps) => {
         },
       );
       setGetValue(response?.data);
+      console.log('response?.data', response?.data);
     } catch (error) {
       console.log('nainb errror two', error);
     }
@@ -407,7 +462,11 @@ const Cash = ({ route }: CasaStackScreenProps) => {
             </View>
             <View style={[Layout.alignItemsEnd]}>
               <Text>1</Text>
-              <Text>{parseFloat(getValue[0]?.unitValue).toFixed(2)}</Text>
+              <Text>
+                {getValue[0]?.unitValue
+                  ? parseFloat(getValue[0]?.unitValue).toFixed(2)
+                  : 0}
+              </Text>
             </View>
           </View>
           <View

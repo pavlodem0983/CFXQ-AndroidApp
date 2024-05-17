@@ -190,6 +190,7 @@
     "GurdaScreen3": "Il tuo Plus composto è:",
     "depositNewTxt": "I depositi sotto il valore minimo di 60 USD non saranno accreditati o rimborsati.",
     "widhtrawNewTxt": "I prelievi sotto il valore minimo di 60 USD non saranno processati.",
-    "redTxt": "L'operazione non può essere eseguita a causa della mancanza del KYC. Contatta il supporto."
+    "redTxt": "L'operazione non può essere eseguita a causa della mancanza del KYC. Contatta il supporto.",
+    "accountDelete": "Richiesta rimozione account"
   }
 }

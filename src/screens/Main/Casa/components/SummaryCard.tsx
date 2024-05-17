@@ -19,6 +19,7 @@ const SummaryCard = ({ tokens }: SummaryCardProps) => {
   const dispatch = useAppDispatch();
   const { tokenTypes, user } = useAppSelector(state => state.app);
   const { showTotalPrice } = useAppSelector(state => state.settings);
+  // console.log(JSON.stringify(tokens, 2, 4));
 
   const initialValue = 0;
   const currency = useCurrency();
@@ -27,14 +28,21 @@ const SummaryCard = ({ tokens }: SummaryCardProps) => {
       const token = tokenTypes.find(
         token => token.id === currentValue.tokenType.id,
       );
+      console.log(JSON.stringify(token, 2, 4));
+
       const prefferedCurrency = user?.preferredCurrency;
+      console.log(user?.preferredCurrency);
+
       const priceObject = token?.tokenPrices.find(
         p =>
           p.currencyTo.toLowerCase() === prefferedCurrency?.toLocaleLowerCase(),
       );
+      console.log('accumulator, currentValue', accumulator, currentValue);
 
       const unitPrice = priceObject ? priceObject.unitValue : 0;
       const price = unitPrice * currentValue.total;
+      console.log('price', price, unitPrice, currentValue.total);
+
       return accumulator + price;
     }, initialValue);
   }, [tokens]);
