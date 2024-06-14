@@ -13,38 +13,21 @@ type SummaryCardProps = {
   tokens: Balance[];
 };
 
-const SummaryCard = ({ tokens }: SummaryCardProps) => {
+const SummaryCard = ({ tokens, totalPrice }: SummaryCardProps) => {
   const { Layout, Colors, Gutters, Images } = useTheme();
   const navigation = useNavigation();
   const dispatch = useAppDispatch();
   const { tokenTypes, user } = useAppSelector(state => state.app);
   const { showTotalPrice } = useAppSelector(state => state.settings);
   // console.log(JSON.stringify(tokens, 2, 4));
+  console.log(JSON.stringify(tokens, 2, 4));
 
   const initialValue = 0;
   const currency = useCurrency();
   const total = useMemo(() => {
     return tokens.reduce((accumulator, currentValue) => {
-      const token = tokenTypes.find(
-        token => token.id === currentValue.tokenType.id,
-      );
-      console.log(JSON.stringify(token, 2, 4));
-
-      const prefferedCurrency = user?.preferredCurrency;
-      console.log(user?.preferredCurrency);
-
-      const priceObject = token?.tokenPrices.find(
-        p =>
-          p.currencyTo.toLowerCase() === prefferedCurrency?.toLocaleLowerCase(),
-      );
-      console.log('accumulator, currentValue', accumulator, currentValue);
-
-      const unitPrice = priceObject ? priceObject.unitValue : 0;
-      const price = unitPrice * currentValue.total;
-      console.log('price', price, unitPrice, currentValue.total);
-
-      return accumulator + price;
-    }, initialValue);
+      return accumulator + currentValue.total;
+    }, 0);
   }, [tokens]);
 
   const onPressToggle = useCallback(() => {
@@ -73,7 +56,7 @@ const SummaryCard = ({ tokens }: SummaryCardProps) => {
                 {currency.symbol}
               </Text>
               <Text weight="bold" size="large" ml={6}>
-                {parseFloat(total).toFixed(2)}
+                {parseFloat(totalPrice).toFixed(2)}
               </Text>
             </View>
           </View>

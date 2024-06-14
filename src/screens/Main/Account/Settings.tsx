@@ -57,6 +57,7 @@ const Settings = () => {
         },
       );
       await AsyncStorage.setItem('selectedCurrency', value);
+      console.log('aaaaaaa======>');
     } catch (error) {
       console.log('Error:', error);
     }

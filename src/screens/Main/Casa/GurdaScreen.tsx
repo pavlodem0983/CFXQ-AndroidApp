@@ -165,7 +165,7 @@ const GurdaScreen = () => {
           <View style={[Layout.alignItemsCenter]}>
             <Image
               source={Images.main.zonenew}
-              style={{ width: 400, height: 60, marginTop: 10 }}
+              style={{ width: 350, height: 50, marginTop: 10 }}
             />
           </View>
           <View>
@@ -241,7 +241,7 @@ const GurdaScreen = () => {
               placeholder="Type here"
               placeholderTextColor={Colors.textGray200}
               keyboardType="numeric"
-              style={{ width: 160, height: 30, shadowColor: '#BF174A' }}
+              style={{ width: 160, height: 45, shadowColor: '#BF174A' }}
               value={`${textInputVal} ZONE`} // Set TextInput value from state
               // onChangeText={text => setTextInputVal(text)} // Update state when TextInput changes
             />
@@ -249,7 +249,7 @@ const GurdaScreen = () => {
               placeholder="Type here"
               placeholderTextColor={Colors.textGray200}
               keyboardType="numeric"
-              style={{ width: 160, height: 30 }}
+              style={{ width: 160, height: 45 }}
               value={`${sliderVal.toString()}  ${t(
                 'allTxts.stakingSimulPotentialReturnsMonth',
               )}`} // Set TextInput value from state
@@ -299,7 +299,7 @@ const GurdaScreen = () => {
               borderWidth: 1.2,
               borderColor: Colors.inputBackground,
               // height: 255,
-              width: 390,
+              width: 350,
               paddingHorizontal: 10,
               borderRadius: 5,
               shadowColor: '#268CD0',
@@ -420,18 +420,18 @@ const GurdaScreen = () => {
             <Text style={{ color: 'white' }}>
               {t('allTxts.stakingSimulRulesText5')}
             </Text>
-            <Text style={{ color: 'white' }}>
+            {/* <Text style={{ color: 'white' }}>
               {t('allTxts.stakingSimulRulesTest6')}
-            </Text>
+            </Text> */}
             <Text style={{ color: 'white' }}>
               {t('allTxts.stakingSimulRulesText7')}
             </Text>
             <Text style={{ color: 'white' }}>
               {t('allTxts.stakingSimulRulesText8')}
             </Text>
-            <Text style={{ color: 'white' }}>
+            {/* <Text style={{ color: 'white' }}>
               {t('allTxts.stakingSimulRulesText9')}
-            </Text>
+            </Text> */}
           </View>
         </ScrollView>
       </SafeAreaView>

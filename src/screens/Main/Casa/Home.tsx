@@ -103,8 +103,8 @@ const Home = () => {
             </TouchableOpacity>
           </View>
         </View>
-        <AssetList tokens={tokens} />
       </SafeAreaView>
+      <AssetList tokens={tokens} />
     </View>
   );
 };

@@ -23,14 +23,12 @@ const Cash = ({ route }: CasaStackScreenProps) => {
 
   const tokens = route.params?.tokens;
   const check = route.params?.check;
-  console.log(AccessToken);
 
   const [getData, setGetData] = useState([]);
   const [getValue, setGetValue] = useState([]);
   const [tokTypes, setTokTypes] = useState([]);
   const [assetShortNames, setAssetShortNames] = useState({});
   const addressId = token[0]?.address;
-  console.log('checkkkkkkkkk', user?.id);
 
   const [selectedAssetId, setSelectedAssetId] = useState<string | null>(null);
   const [tokenId, setTokenId] = useState<string | null>(101);
@@ -247,6 +245,8 @@ const Cash = ({ route }: CasaStackScreenProps) => {
         },
       );
       setAssetValue(response?.data?.available);
+      console.log(JSON.stringify(response?.data, 2, 4));
+
       setGetAddress(response?.data?.id);
     } catch (error) {
       console.log('nainbcheck3 ', error);
@@ -398,7 +398,7 @@ const Cash = ({ route }: CasaStackScreenProps) => {
                         key => assetShortNames[key] === value,
                       );
                       setSelectedAssetId(value);
-                      getTokenBalances4(value);
+                      getTokenBalances4(assetId);
                       getTokenBalances2(assetId);
                       getTokenData(value);
                       setShowValue(value);

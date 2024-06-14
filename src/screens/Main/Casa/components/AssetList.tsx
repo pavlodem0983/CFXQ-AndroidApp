@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   StyleSheet,
   View,
@@ -37,6 +37,21 @@ const AssetList = ({ tokens }: AssetListProps) => {
     navigation.navigate('Asset' as never, { asset });
   };
 
+  // Function to calculate total price
+  const calculateTotalPrice = useMemo(() => {
+    return tokens.reduce((total, item) => {
+      const token = tokenTypes.find(token => token.id === item.tokenType.id);
+      const prefferedCurrency = user?.preferredCurrency;
+      const priceObject = token?.tokenPrices.find(
+        p => p.currencyTo.toLowerCase() === prefferedCurrency?.toLowerCase(),
+      );
+      const unitPrice = priceObject ? priceObject.unitValue : 0;
+      return total + unitPrice * item.cumulatedTotal;
+    }, 0);
+  }, [tokens, tokenTypes, user]);
+
+  const totalPrice = calculateTotalPrice;
+
   const renderItem: ListRenderItem<Balance> = ({ item }) => {
     const image = Images.coins.hasOwnProperty(item.tokenType.shortName)
       ? Images.coins[item.tokenType.shortName]
@@ -44,8 +59,7 @@ const AssetList = ({ tokens }: AssetListProps) => {
     const token = tokenTypes.find(token => token.id === item.tokenType.id);
     const prefferedCurrency = user?.preferredCurrency;
     const priceObject = token?.tokenPrices.find(
-      p =>
-        p.currencyTo.toLowerCase() === prefferedCurrency?.toLocaleLowerCase(),
+      p => p.currencyTo.toLowerCase() === prefferedCurrency?.toLowerCase(),
     );
 
     const unitPrice = priceObject ? priceObject.unitValue : 0;
@@ -77,15 +91,9 @@ const AssetList = ({ tokens }: AssetListProps) => {
               </View>
               <View style={[Layout.alignItemsEnd]}>
                 <Text weight="medium">
-                  {/* {showTotalPrice
-                    ? '*'.repeat(String(item?.cumulatedTotal).length)
-                    : item?.cumulatedTotal} */}
                   {showTotalPrice ? '*******' : item?.cumulatedTotal}
                 </Text>
                 <Text color="textGray200" weight="regular" mt={2}>
-                  {/* {showTotalPrice
-                    ? ''.repeat(String(price).length)
-                    : `= ${price}`} */}
                   {showTotalPrice ? '*********' : `= ${price}`}
                 </Text>
               </View>
@@ -113,15 +121,9 @@ const AssetList = ({ tokens }: AssetListProps) => {
             </View>
             <View style={[Layout.alignItemsEnd]}>
               <Text weight="medium">
-                {/* {showTotalPrice
-                  ? '*'.repeat(String(item?.cumulatedTotal).length)
-                  : item?.cumulatedTotal} */}
                 {showTotalPrice ? '*******' : item?.cumulatedTotal}
               </Text>
               <Text color="textGray200" weight="regular" mt={2}>
-                {/* {showTotalPrice
-                  ? '*'.repeat(String(price).length)
-                  : `= ${price}`} */}
                 {showTotalPrice ? '*********' : `= ${price}`}
               </Text>
             </View>
@@ -133,7 +135,7 @@ const AssetList = ({ tokens }: AssetListProps) => {
 
   return (
     <>
-      <SummaryCard tokens={tokens} />
+      <SummaryCard tokens={tokens} totalPrice={totalPrice} />
 
       <FlatList
         data={tokens}
@@ -159,18 +161,10 @@ const AssetList = ({ tokens }: AssetListProps) => {
                 />
                 <TouchableOpacity>
                   <Text color="highlight" ml={5}>
-                    {/* Nascondi Saldi O  */}
                     {t('allTxts.homePageHideZeroBalances')}
                   </Text>
                 </TouchableOpacity>
               </View>
-              {/* <TouchableOpacity>
-              <Ionicons
-                name="add-circle-outline"
-                color={Colors.textGray500}
-                size={24}
-              />
-            </TouchableOpacity> */}
             </View>
           </>
         }

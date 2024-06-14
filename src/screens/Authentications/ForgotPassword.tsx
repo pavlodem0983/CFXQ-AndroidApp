@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Alert, KeyboardAvoidingView } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Alert,
+  KeyboardAvoidingView,
+  ScrollView,
+} from 'react-native';
 import { useTheme } from '@hooks';
 import { Button, TextInput, Text, Brand, Loading } from '@components';
 import LinearGradient from 'react-native-linear-gradient';
@@ -13,6 +19,7 @@ import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useTranslation } from 'react-i18next';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const API_URL = process.env.API_URL;
 
@@ -98,28 +105,45 @@ const ForgotPassword = () => {
       setLoading(false);
 
       if (response.status === 200) {
+        setLoading(false);
         navigation.navigate('AuthHome' as never);
-        Alert.alert('Password changed sucessfully!');
+        Alert.alert('Password changed successfully!');
       } else {
+        setLoading(false);
         console.error('Unexpected status code:', response.status);
+        Alert.alert('Unexpected error occurred. Please try again later.');
       }
     } catch (error) {
-      console.error('An error occurred:', error);
+      setLoading(false);
+      if (error.response && error.response.data && error.response.data.detail) {
+        setLoading(false);
+
+        const errorMessage = error.response.data.detail;
+        console.error('An error occurred:', errorMessage);
+        Alert.alert('Error', errorMessage);
+      } else {
+        setLoading(false);
+
+        console.error('An unexpected error occurred:', error);
+        Alert.alert(
+          'Error',
+          'An unexpected error occurred. Please try again later.',
+        );
+      }
     }
   };
-
   return (
-    <KeyboardAvoidingView style={{ flex: 1 }}>
-      <LinearGradient
-        colors={['rgba(8, 9, 14, 20)', 'rgba(22, 36, 53, 20)']}
-        style={[Layout.fill]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 0, y: 1 }}
-      >
-        <SafeAreaView style={[Layout.fill]}>
-          <View style={[Layout.alignItemsCenter]}>
-            <Brand />
-          </View>
+    <LinearGradient
+      colors={['rgba(8, 9, 14, 20)', 'rgba(22, 36, 53, 20)']}
+      style={[Layout.fill]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 0, y: 1 }}
+    >
+      <SafeAreaView style={[Layout.fill]}>
+        <View style={[Layout.alignItemsCenter]}>
+          <Brand />
+        </View>
+        <KeyboardAwareScrollView>
           <View style={[Layout.alignItemsCenter, Gutters.regularHPadding]}>
             <Text
               color="white"
@@ -221,31 +245,33 @@ const ForgotPassword = () => {
               )}
             </Formik>
           )}
-          <View style={{ position: 'absolute', top: 50, left: 10 }}>
-            <TouchableOpacity onPress={navigation.goBack}>
-              <MCIcon name="close" color="white" size={24} />
-            </TouchableOpacity>
-          </View>
-        </SafeAreaView>
-        <Modal isVisible={showModal}>
-          <View style={styles.content}>
-            <Text color="white" weight="bold" size="medium" mb={16}>
-              {t('allTxts.resetPasswordCheckEmailAlertTitle')}
-            </Text>
-            <Text color="white" align="center" mb={10} mt={10}>
-              {t('allTxts.resetPasswordCheckEmailText')}
-            </Text>
-            <Button
-              color="white"
-              title={t('allTxts.resetPasswordCheckEmailButton')}
-              style={[Layout.fullWidth, Gutters.regularTMargin]}
-              onPress={onCloseModal}
-            />
-          </View>
-        </Modal>
-        {loading && <Loading />}
-      </LinearGradient>
-    </KeyboardAvoidingView>
+        </KeyboardAwareScrollView>
+
+        <View style={{ position: 'absolute', top: 50, left: 10 }}>
+          <TouchableOpacity onPress={navigation.goBack}>
+            <MCIcon name="close" color="white" size={24} />
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+
+      <Modal isVisible={showModal}>
+        <View style={styles.content}>
+          <Text color="white" weight="bold" size="medium" mb={16}>
+            {t('allTxts.resetPasswordCheckEmailAlertTitle')}
+          </Text>
+          <Text color="white" align="center" mb={10} mt={10}>
+            {t('allTxts.resetPasswordCheckEmailText')}
+          </Text>
+          <Button
+            color="white"
+            title={t('allTxts.resetPasswordCheckEmailButton')}
+            style={[Layout.fullWidth, Gutters.regularTMargin]}
+            onPress={onCloseModal}
+          />
+        </View>
+      </Modal>
+      {loading && <Loading />}
+    </LinearGradient>
   );
 };
 
